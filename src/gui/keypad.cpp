@@ -30,10 +30,6 @@
 #include <QStyle>
 #include <QStyleOptionButton>
 
-#if QT_VERSION >= 0x040400 && defined(Q_WS_MAC) && !defined(QT_NO_STYLE_MAC)
-#include <QMacStyle>
-#endif
-
 const Keypad::KeyDescription Keypad::keyDescriptions[] = {
     {QString::fromLatin1("0"), Key0, true, 3, 0},
     {QString::fromLatin1("1"), Key1, true, 2, 0},
@@ -144,14 +140,8 @@ void Keypad::layoutButtons()
 {
     int layoutSpacing = 3;
 
-#if QT_VERSION >= 0x040400 && defined(Q_WS_MAC) && !defined(QT_NO_STYLE_MAC)
-    // Workaround for a layouting bug in QMacStyle, Qt 4.4.0. Buttons would overlap.
-    if (qobject_cast<QMacStyle *>(p->style()))
-        layoutSpacing = -1;
-#endif
-
     QGridLayout* layout = new QGridLayout(this);
-    layout->setMargin(3);
+    layout->setContentsMargins(3, 3, 3, 3);
     layout->setSpacing(layoutSpacing);
 
     QHashIterator<Button, QPair<QPushButton*, const KeyDescription*> > i(keys);
@@ -194,7 +184,7 @@ void Keypad::sizeButtons()
     QStyleOptionButton option;
     const QWidget* exampleWidget = key(KeyAcos);
     option.initFrom(exampleWidget);
-    QSize minSize = QSize(maxWidth, textHeight).expandedTo(QApplication::globalStrut());
+    QSize minSize = QSize(maxWidth, textHeight).expandedTo(QSize(50, 30));
     QSize size = exampleWidget->style()->sizeFromContents(type, &option, minSize, exampleWidget);
 
 #ifdef Q_WS_X11

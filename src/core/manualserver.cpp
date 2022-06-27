@@ -26,6 +26,7 @@
 #include <QFile>
 #include <QtHelp/QHelpEngineCore>
 #include <QtHelp/QHelpLink>
+#include <QHelpFilterEngine>
 #include <QString>
 #include <QMap>
 #include <QEvent>
@@ -90,10 +91,11 @@ void ManualServer::setupHelpEngine()
     QString collectionFile = deployDocs() ;
 
     m_helpEngine = new QHelpEngineCore(collectionFile, this);
+    m_helpEngine->setUsesFilterEngine(true);
 
-    QStringList filters = m_helpEngine->customFilters();
+    QStringList filters = m_helpEngine->filterEngine()->filters();
     if (!filters.isEmpty())
-        m_helpEngine->setCurrentFilter(filters.first());
+        m_helpEngine->filterEngine()->setActiveFilter(filters.first());
 }
 
 ManualServer *ManualServer::instance()

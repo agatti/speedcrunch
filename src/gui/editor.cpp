@@ -29,7 +29,6 @@
 #include "core/session.h"
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QEvent>
 #include <QFont>
 #include <QFrame>
@@ -1040,7 +1039,7 @@ void EditorCompletion::showCompletion(const QStringList& choices)
     QPoint position = m_editor->mapToGlobal(point);
 
     // If popup is partially invisible, move to other position.
-    auto screen = QApplication::desktop()->availableGeometry(m_editor);
+    auto screen = QGuiApplication::screens().first()->availableGeometry();
     if (position.y() + height > screen.y() + screen.height())
         position.setY(position.y() - height - m_editor->height());
     if (position.x() + width > screen.x() + screen.width())
@@ -1297,7 +1296,7 @@ void ConstantCompletion::showCompletion()
     const int width = m_popup->width();
 
     // If popup is partially invisible, move to other position.
-    const QRect screen = QApplication::desktop()->availableGeometry(m_editor);
+    auto screen = QGuiApplication::screens().first()->availableGeometry();
     if (pos.y() + height > screen.y() + screen.height())
         pos.setY(pos.y() - height - m_editor->height());
     if (pos.x() + width > screen.x() + screen.width())

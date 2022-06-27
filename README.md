@@ -11,7 +11,7 @@ and Linux in a number of languages.
 To build SpeedCrunch, you need:
 
 - A C++11-capable compiler (e.g. Microsoft Visual C++ 2013 or later, GCC 4.8 or later)
-- [Qt](http://qt.io) 5.2 or later
+- [Qt](http://qt.io) 6.3 or later
 - [CMake](http://cmake.org) 3.1 or later
 
 To build SpeedCrunch in a dedicated build directory and install it, run the following
@@ -41,10 +41,10 @@ Building the HTML manual is normally not necessary because a prebuilt copy is in
 with the SpeedCrunch source. Rebuilding the manual requires the following additional
 software:
 
-  - [Python](http://python.org) 3.4 or later
-  - [Sphinx](http://sphinx-doc.org) 1.3 or later
+  - [Python](http://python.org) 3.7 or later
+  - [Sphinx](http://sphinx-doc.org) 5.0 or later
   - [the Qt help builder extension](https://github.com/sphinx-doc/sphinxcontrib-qthelp) 1.0 or later
-  - [the Quark theme](https://pypi.python.org/pypi/quark-sphinx-theme) 0.2 or later
+  - [the Quark theme](https://pypi.python.org/pypi/quark-sphinx-theme) 0.6 or later
 
 To build the manual in a dedicated build directory, run the following commands from
 the root of the source directory:

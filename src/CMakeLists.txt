@@ -15,6 +15,8 @@ if(APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 endif()
 
+add_compile_definitions(QT_DISABLE_DEPRECATED_BEFORE=0x050F00)
+
 set(speedcrunch_VERSION "master")
 
 set(CMAKE_AUTOMOC ON)
@@ -25,9 +27,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_MACOSX_RPATH ON)
 
-find_package(Qt5 COMPONENTS REQUIRED Core)
-find_package(Qt5 COMPONENTS REQUIRED Widgets)
-find_package(Qt5 COMPONENTS REQUIRED Help)
+find_package(Qt6 COMPONENTS REQUIRED Core)
+find_package(Qt6 COMPONENTS REQUIRED Widgets)
+find_package(Qt6 COMPONENTS REQUIRED Help)
 
 ADD_DEFINITIONS("-DSPEEDCRUNCH_VERSION=\"${speedcrunch_VERSION}\"")
 ADD_DEFINITIONS(-DQT_USE_QSTRINGBUILDER)
@@ -81,8 +83,8 @@ set_property(TARGET ${APPLICATION_NAME} PROPERTY CXX_STANDARD 11)
 
 add_custom_target(confclean COMMAND rm -rf Makefile CMakeFiles/ CMakeCache.txt cmake_install.cmake DartTestfile.txt install_manifest.txt)
 
-set(QT_LIBRARIES Qt5::Widgets Qt5::Help)
-target_link_libraries(${APPLICATION_NAME} ${QT_LIBRARIES} Qt5::Widgets Qt5::Help Qt5::Sql)
+set(QT_LIBRARIES Qt6::Widgets Qt6::Help)
+target_link_libraries(${APPLICATION_NAME} ${QT_LIBRARIES} Qt6::Widgets Qt6::Help Qt6::Sql)
 
 enable_testing()
 
@@ -151,7 +153,7 @@ endif()
 
 if(WIN32)
     include(QtWin32Deploy)
-    qtwin32_deploy_modules(${BIN_INSTALL_DIR} qtwin32_Qt5Widgets qtwin32_Qt5Help)
+    qtwin32_deploy_modules(${BIN_INSTALL_DIR} qtwin32_Qt6Widgets qtwin32_Qt6Help)
     qtwin32_deploy_default_qt_conf(${BIN_INSTALL_DIR})
 elseif(APPLE)
     include(MacdeployQt)

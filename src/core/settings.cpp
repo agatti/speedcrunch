@@ -71,29 +71,8 @@ QString Settings::getDataPath()
 {
 #ifdef SPEEDCRUNCH_PORTABLE
     return QApplication::applicationDirPath();
-#elif QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
-    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-#elif defined(Q_OS_WIN)
-    // We can't use AppDataLocation, so we simply use the Win32 API to emulate it.
-    WCHAR w32path[MAX_PATH];
-    HRESULT result = SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, w32path);
-    Q_ASSERT(SUCCEEDED(result));
-    QString path = QString::fromWCharArray(w32path);
-    QString orgName = QCoreApplication::organizationName();
-    QString appName = QCoreApplication::applicationName();
-    if (!orgName.isEmpty()) {
-        path.append('\\');
-        path.append(orgName);
-    }
-    if (!appName.isEmpty()) {
-        path.append('\\');
-        path.append(appName);
-    }
-    return QDir::fromNativeSeparators(path);
 #else
-    // Any non-Windows with Qt < 5.4. Since DataLocation and AppDataLocation are
-    // equivalent outside of Windows, that should be fine.
-    return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 #endif
 }
 
@@ -278,7 +257,7 @@ void Settings::save()
 char Settings::radixCharacter() const
 {
     if (isRadixCharacterAuto() || isRadixCharacterBoth())
-        return QLocale().decimalPoint().toLatin1();
+        return QLocale().decimalPoint().toLatin1().at(0);
 
     return s_radixCharacter;
 }

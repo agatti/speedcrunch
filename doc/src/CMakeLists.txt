@@ -12,26 +12,24 @@ list(APPEND doc_depends
 
 
 # find Python
-find_package(PythonInterp 3.4 QUIET)
+find_package(PythonInterp 3.7 QUIET)
 
-# get a path for qcollectiongenerator
-find_package(Qt5Help)
+# get a path for qhelpgenerator
+find_package(Qt6Help)
 
-if(TARGET Qt5::qcollectiongenerator)
-    # The Qt5::qcollectiongenerator imported target was added in Qt 5.3, but it tells us exactly where
-    # qcollectiongenerator is.
-    get_target_property(qcg Qt5::qcollectiongenerator LOCATION)
+if(TARGET Qt6::qhelpgenerator)
+    get_target_property(qcg Qt6::qhelpgenerator LOCATION)
     get_filename_component(qt_bin_dir ${qcg} DIRECTORY)
 else()
     # "Next to qmake" is probably correct.
-    get_target_property(qmake Qt5::qmake LOCATION)
+    get_target_property(qmake Qt6::qmake LOCATION)
     get_filename_component(qt_bin_dir ${qmake} DIRECTORY)
 endif()
 
 find_program(
-    QCOLLECTIONGENERATOR_EXECUTABLE
-    NAMES qcollectiongenerator
-    HINTS ${qt_bin_dir})
+    QHELPGENERATOR_EXECUTABLE
+    NAMES qhelpgenerator
+    HINTS ${qt_bin_dir} /opt/homebrew/share/qt/libexec)
 
 # get a path for sphinx-build
 if(WIN32)
@@ -49,7 +47,7 @@ find_program(
 set(DOCTOOL_EXECUTABLE ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/doc-tool.py")
 set(DOCTOOL_COMMAND ${DOCTOOL_EXECUTABLE}
                     --sphinx-build-binary="${SPHINX_EXECUTABLE}"
-                    --qcollectiongenerator-binary=${QCOLLECTIONGENERATOR_EXECUTABLE}
+                    --qcollectiongenerator-binary=${QHELPGENERATOR_EXECUTABLE}
                     --source-dir="${CMAKE_CURRENT_SOURCE_DIR}")
 
 

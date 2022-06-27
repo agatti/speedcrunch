@@ -47,6 +47,8 @@
 #include "gui/syntaxhighlighter.h"
 #include "math/floatconfig.h"
 
+#include <QActionGroup>
+#include <QStandardPaths>
 #include <QLatin1String>
 #include <QLocale>
 #include <QTextStream>
@@ -58,10 +60,10 @@
 #include <QClipboard>
 #include <QCloseEvent>
 #include <QDesktopServices>
-#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QFont>
 #include <QFontDialog>
+#include <QGuiApplication>
 #include <QInputDialog>
 #include <QLabel>
 #include <QMenu>
@@ -87,7 +89,7 @@ QTranslator* MainWindow::createTranslator(const QString& langCode)
     if(!translator->load(locale, QString(":/locale/"))) {
         // Strip the country and try to find a generic translation for this language
         locale = QLocale(locale.language());
-        translator->load(locale, QString(":/locale/"));
+        (void) translator->load(locale, QString(":/locale/"));
     }
 
     return translator;
@@ -426,26 +428,26 @@ void MainWindow::createActionGroups()
 
 void MainWindow::createActionShortcuts()
 {
-    m_actions.sessionLoad->setShortcut(Qt::CTRL + Qt::Key_L);
-    m_actions.sessionQuit->setShortcut(Qt::CTRL + Qt::Key_Q);
-    m_actions.sessionSave->setShortcut(Qt::CTRL + Qt::Key_S);
+    m_actions.sessionLoad->setShortcut(Qt::CTRL | Qt::Key_L);
+    m_actions.sessionQuit->setShortcut(Qt::CTRL | Qt::Key_Q);
+    m_actions.sessionSave->setShortcut(Qt::CTRL | Qt::Key_S);
     m_actions.editClearExpression->setShortcut(Qt::Key_Escape);
-    m_actions.editClearHistory->setShortcut(Qt::CTRL + Qt::Key_N);
-    m_actions.editCopyLastResult->setShortcut(Qt::CTRL + Qt::Key_R);
-    m_actions.editCopy->setShortcut(Qt::CTRL + Qt::Key_C);
-    m_actions.editPaste->setShortcut(Qt::CTRL + Qt::Key_V);
-    m_actions.editSelectExpression->setShortcut(Qt::CTRL + Qt::Key_A);
-    m_actions.editWrapSelection->setShortcut(Qt::CTRL + Qt::Key_P);
-    m_actions.viewBitfield->setShortcut(Qt::CTRL + Qt::Key_6);
-    m_actions.viewConstants->setShortcut(Qt::CTRL + Qt::Key_2);
+    m_actions.editClearHistory->setShortcut(Qt::CTRL | Qt::Key_N);
+    m_actions.editCopyLastResult->setShortcut(Qt::CTRL | Qt::Key_R);
+    m_actions.editCopy->setShortcut(Qt::CTRL | Qt::Key_C);
+    m_actions.editPaste->setShortcut(Qt::CTRL | Qt::Key_V);
+    m_actions.editSelectExpression->setShortcut(Qt::CTRL | Qt::Key_A);
+    m_actions.editWrapSelection->setShortcut(Qt::CTRL | Qt::Key_P);
+    m_actions.viewBitfield->setShortcut(Qt::CTRL | Qt::Key_6);
+    m_actions.viewConstants->setShortcut(Qt::CTRL | Qt::Key_2);
     m_actions.viewFullScreenMode->setShortcut(Qt::Key_F11);
-    m_actions.viewFunctions->setShortcut(Qt::CTRL + Qt::Key_3);
-    m_actions.viewHistory->setShortcut(Qt::CTRL + Qt::Key_7);
-    m_actions.viewKeypad->setShortcut(Qt::CTRL + Qt::Key_K);
-    m_actions.viewFormulaBook->setShortcut(Qt::CTRL + Qt::Key_1);
-    m_actions.viewStatusBar->setShortcut(Qt::CTRL + Qt::Key_B);
-    m_actions.viewVariables->setShortcut(Qt::CTRL + Qt::Key_4);
-    m_actions.viewUserFunctions->setShortcut(Qt::CTRL + Qt::Key_5);
+    m_actions.viewFunctions->setShortcut(Qt::CTRL | Qt::Key_3);
+    m_actions.viewHistory->setShortcut(Qt::CTRL | Qt::Key_7);
+    m_actions.viewKeypad->setShortcut(Qt::CTRL | Qt::Key_K);
+    m_actions.viewFormulaBook->setShortcut(Qt::CTRL | Qt::Key_1);
+    m_actions.viewStatusBar->setShortcut(Qt::CTRL | Qt::Key_B);
+    m_actions.viewVariables->setShortcut(Qt::CTRL | Qt::Key_4);
+    m_actions.viewUserFunctions->setShortcut(Qt::CTRL | Qt::Key_5);
     m_actions.settingsResultFormatGeneral->setShortcut(Qt::Key_F2);
     m_actions.settingsResultFormatFixed->setShortcut(Qt::Key_F3);
     m_actions.settingsResultFormatEngineering->setShortcut(Qt::Key_F4);
@@ -455,8 +457,8 @@ void MainWindow::createActionShortcuts()
     m_actions.settingsResultFormatHexadecimal->setShortcut(Qt::Key_F8);
     m_actions.settingsResultFormatSexagesimal->setShortcut(Qt::Key_F9);
     m_actions.settingsAngleUnitCycle->setShortcut(Qt::Key_F10);
-    m_actions.settingsRadixCharDot->setShortcut(Qt::CTRL + Qt::Key_Period);
-    m_actions.settingsRadixCharComma->setShortcut(Qt::CTRL + Qt::Key_Comma);
+    m_actions.settingsRadixCharDot->setShortcut(Qt::CTRL | Qt::Key_Period);
+    m_actions.settingsRadixCharComma->setShortcut(Qt::CTRL | Qt::Key_Comma);
     m_actions.contextHelp->setShortcut(Qt::Key_F1);
 }
 
@@ -990,8 +992,7 @@ void MainWindow::applySettings()
         // We couldn't restore the saved geometry; that means it was either empty
         // or just isn't valid anymore so we use default size and position.
         resize(640, 480);
-        QDesktopWidget* desktop = QApplication::desktop();
-        QRect screen = desktop->availableGeometry(this);
+        QRect screen = QGuiApplication::screens().first()->availableGeometry();
         move(screen.center() - rect().center());
     }
     restoreState(m_settings->windowState);
@@ -1640,11 +1641,7 @@ void MainWindow::setAngleModeGradian()
 
 inline static QString documentsLocation()
 {
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-#else
-    return QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
-#endif
 }
 
 void MainWindow::exportHtml()
@@ -1662,7 +1659,7 @@ void MainWindow::exportHtml()
     }
 
     QTextStream stream(& file);
-    stream.setCodec("UTF-8");
+    stream.setEncoding(QStringConverter::Utf8);
     stream << m_widgets.display->exportHtml();
 
     file.close();
@@ -1684,7 +1681,7 @@ void MainWindow::exportPlainText()
 
     QByteArray text;
     QTextStream stream(&text, QIODevice::WriteOnly | QIODevice::Text);
-    stream.setCodec("UTF-8");
+    stream.setEncoding(QStringConverter::Utf8);
     stream << m_widgets.display->document()->toPlainText();
     stream.flush();
 

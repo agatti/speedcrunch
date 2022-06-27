@@ -30,6 +30,7 @@
 #include <QPaintEvent>
 #include <QApplication>
 #include <QPushButton>
+#include <QRegularExpression>
 
 BitWidget::BitWidget(int bitPosition, QWidget* parent)
     : QLabel(parent),
@@ -297,7 +298,7 @@ void BitFieldWidget::onBitChanged()
     while (bitsIterator.hasNext())
         expression.prepend(bitsIterator.next()->state() ? "1" : "0");
 
-    expression.remove(QRegExp(QString("^0{,%1}").arg(NumberOfBits - 1)));
+    expression.remove(QRegularExpression(QString("^0{,%1}").arg(NumberOfBits - 1)));
     expression.prepend("0b");
 
     emit bitsChanged(expression);
